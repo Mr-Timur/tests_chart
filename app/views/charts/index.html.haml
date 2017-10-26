@@ -1,0 +1,5 @@
+#status
+  / Colors provided to easier identify status of sessions(1.passed: green, 2.error: red, 3.failed: yellow, 4.stopped: blue)
+  = column_chart @sessions.group(:summary_status).group_by_day(:created_at).count, colors: ['#109518', '#DC3912', '#FF9900', '#3266CB'], download: true
+#duration
+  = line_chart chart_dates(@sessions), download: true
