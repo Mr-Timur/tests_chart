@@ -1,26 +1,23 @@
 module ApplicationHelper
-  def format_status_data(data)
+  def abnormal_days(data)
+    # Get all failed and passed times to compare and indentify abnormal days
+    dates = data.map{|k,v| {status: k.first, date: k.last, count: v} if %w(failed passed).include?(k.first)}
+    dates = dates.compact.group_by{|x| x[:date]} # group for comparing by one day
+    dates.delete_if do |k,v|
+      difference = 0
+      v.each{|x| x[:status] == 'failed' ? difference -= x[:count] : difference += x[:count]}
+      difference > 0
+    end
+    dates.keys.map{|x| x.strftime('%Y-%m-%d')}
   end
 
   def status_chart_data(sessions)
     data = sessions.group('summary_status').group('DATE(created_at)').count # get grouped data for chart
-    data = data.to_h.map{|k,v| {date: k.last, count: v, status: k.first}} # move to array of hashes for providing attributes to js lib
-    data = data.group_by{|x| x[:date]}.sort_by(&:first) # sort by date
-    data = data.to_h
-    data.values.each{|x| x.each{|x| x.delete(:date)}}
-    data
+    data = data.to_h.sort_by{|k,v| k.last} # sort by date
+    data.to_h
   end
 
   def duration_chart_data(sessions)
-    data = []
-    dates = sessions.map{|x| x.created_at.to_date}.uniq # get dates when sessions were
-    dates.each do |date|
-      one_day_sessions = sessions.where(created_at: date.midnight..date.end_of_day) # get sessions till one day
-      difference = one_day_sessions.sum{|x| x.passed_tests_count - x.failed_tests_count}
-      
-      # Dates should be formated in such way to avoid cutting annotating abnormal days by JS library which parse only date
-      data << {date: ((difference > 0) ? date.strftime("%d_%m_%y") : "(!)_#{date.strftime("%d_%m_%y")}"), duration: one_day_sessions.sum(&:duration)} # Sum of durations per each day
-      end
-    data
+    data = sessions.map{|x| [x.created_at.strftime('%a, %d %b %Y %H:%M:%S'), x.duration]}
   end
 end
