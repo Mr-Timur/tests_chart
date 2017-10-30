@@ -1,13 +1,11 @@
 module ApplicationHelper
+  require 'savanna-outliers'
+
   def abnormal_days(data)
-    # Get all failed and passed times to compare and indentify abnormal days
-    dates = data.map{|k,v| {status: k.first, date: k.last, count: v} if %w(failed passed).include?(k.first)}
-    dates = dates.compact.group_by{|x| x[:date]} # group for comparing by one day
-    dates.delete_if do |k,v|
-      difference = 0
-      v.each{|x| x[:status] == 'failed' ? difference -= x[:count] : difference += x[:count]}
-      difference > 0
-    end
+    # Get all failed times to detect anomalies
+    dates = {}
+    data.each{|k,v| dates[k.last] = v if k.first == 'failed'} # filter by failed builds
+    dates = Savanna::Outliers.get_outliers(dates, :all)
     dates.keys.map{|x| x.strftime('%Y-%m-%d')}
   end
 
