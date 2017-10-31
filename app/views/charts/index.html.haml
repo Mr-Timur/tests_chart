@@ -1,11 +1,10 @@
-- status_data = status_chart_data(@sessions)
 #status
   / Colors provided to easier identify status of sessions(1.passed: green, 2.failed: red, 3.stopped: blue, 4.error: yellow)
-  = column_chart status_data, colors: ['#109518', '#DC3912', '#3266CB', '#FF9900'], stacked: true, download: true, xtitle: "Date", ytitle: "Count", adapter: "highcharts"
+  = column_chart status_chart_data(@sessions), colors: ['#109518', '#DC3912', '#3266CB', '#FF9900'], stacked: true, download: true, xtitle: "Date", ytitle: "Count", adapter: "highcharts"
 %p
 #duration
   = line_chart duration_chart_data(@sessions), download: true, xtitle: "Timestamp", ytitle: "Duration (s)", adapter: "highcharts"
 :javascript
-  #{raw abnormal_days(status_data)}.forEach(function(date){
+  #{raw abnormal_days(@sessions)}.forEach(function(date){
     $("text:contains('" + date + "')").css('color', 'red').css('fill', 'red');
   });
