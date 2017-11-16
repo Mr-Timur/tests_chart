@@ -10,8 +10,6 @@ class AnomalyDetectService
     dates
   end
 
-  private
-
   def get_status_counts
     data = sessions.group('date(created_at)', :summary_status).order('date(created_at)').count
     # Get formatted hash for easier analyzing
