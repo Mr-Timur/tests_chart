@@ -1,10 +1,11 @@
-#status
-  / Colors provided to easier identify status of sessions(1.passed: green, 2.failed: red, 3.stopped: blue, 4.error: yellow)
-  = column_chart status_chart_data(@sessions), colors: ['#109518', '#DC3912', '#3266CB', '#FF9900'], stacked: true, download: true, xtitle: "Date", ytitle: "Count", adapter: "highcharts"
-%p
-#duration
-  = line_chart duration_chart_data(@sessions), download: true, xtitle: "Timestamp", ytitle: "Duration (s)", adapter: "highcharts"
-:javascript
-  #{raw abnormal_days(@sessions)}.forEach(function(date){
-    $("text:contains('" + date + "')").css('color', 'red').css('fill', 'red');
-  });
+- cache ["sessions_charts", @sessions.first] do # key is the last created session
+  #status
+    / Colors provided for easier identify status of sessions(1.passed: green, 2.failed: red, 3.error: blue, 4.stopped: yellow)
+    = column_chart status_chart_data(@sessions), colors: ['#109518', '#DC3912', '#3266CB', '#FF9900'], stacked: true, download: true, xtitle: "Date", ytitle: "Count", adapter: "highcharts"
+  %p
+  #duration
+    = line_chart duration_chart_data(@sessions), download: true, xtitle: "Timestamp", ytitle: "Duration (s)", adapter: "highcharts"
+  :javascript
+    #{raw abnormal_days(@sessions).map(&:strftime)}.forEach(function(date){
+      $("text:contains('" + date + "')").css('color', 'red').css('fill', 'red');
+    });
