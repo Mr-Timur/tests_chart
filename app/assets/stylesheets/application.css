@@ -13,3 +13,11 @@
  *= require_tree .
  *= require_self
  */
+
+.explanation {
+  font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  color: #333333;
+  text-align: center;
+}

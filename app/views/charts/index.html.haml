@@ -2,6 +2,8 @@
   #status
     / Colors provided for easier identify status of sessions(1.passed: green, 2.failed: red, 3.error: blue, 4.stopped: yellow)
     = column_chart status_chart_data(@sessions), colors: ['#109518', '#DC3912', '#3266CB', '#FF9900'], stacked: true, download: true, xtitle: "Date", ytitle: "Count", adapter: "highcharts"
+    .explanation
+      Abnormal dates were calculated from formula: if absolute value of difference of mean of all values and current value is smaller than double standard deviation, than value is abnormal. It means that value lay outside the frontier.
   %p
   #duration
     = line_chart duration_chart_data(@sessions), download: true, xtitle: "Timestamp", ytitle: "Duration (s)", adapter: "highcharts"

@@ -20,6 +20,8 @@ class AnomalyDetectService
     end
     counts
   end
+  
+  private
 
   # Method for grouping statuses count by date
   def get_statuses_per_date(statuses)
